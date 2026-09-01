@@ -3,78 +3,73 @@
      ═══════════════════════════════════════════════ -->
 
 #  kary
-### `@archlinux` · `03:43` · `Ryoku III BETA // 18`
+### `@void` · `Ryoku III BETA // 18` · `力`
 
 > **A live specimen — cracked, shot on black.**
 
 ---
 
-## 力 · SYSTEM DOSSIER
+## 力 · DOSSIER
 
 ```
 ┌─────────────────────────────────────────────────────┐
 │                    プロフィール                      │
 ├─────────────────────────────────────────────────────┤
 │  NAME        kary                                    │
-│  HANDLE      @archlinux                              │
-│  OS          Arch Linux · Ryoku v0.40.2              │
-│  WM          Hyprland v0.56.2                        │
-│  SHELL       zsh · kitty 0.48.2                      │
-│  KERNEL      Linux 7.1.11-arch1-1                    │
-│  UPTIME      9h 21m                                  │
-│  LOCATION    RU · MSK                                │
-│  LANG        RU / EN / JP                            │
+│  HANDLE      @void                                   │
+│  ORIGIN      archlinux · ryoku custom                │
+│  AESTHETIC   black · monospace · silence             │
+│  TONE        cracked, not broken                     │
+│  PRIMITIVE   terminal · hyprland · void              │
 └─────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 服 · TELEMETRY
+## 服 · TELEMETRY (style only)
 
-|   CORE  |   CPU  |   GPU   |  MEMORY   |  DISK   |
-|:-------:|:------:|:-------:|:---------:|:-------:|
-|  82°C 🟠 |  14%   |  0°C / 0%  |  13G / 16G  | 42G / 439G |
+> _форма, не цифра_
 
 ```
-NETWORK    ↓ 1.7 KB/s   ↑ 930 B/s
-RESOLUTION 2560×1080 @ 199Hz
-PKGS       13 (flatpak) · 1296 (pacman)
-BRANCH     main · 09b925e
+┌─ VITALS ────────────────────────────────────────────┐
+│  CORE        ● rust                                 │
+│  MEMORY      ◐ silence                              │
+│  SIGNAL      ↓ quiet  ↑ quieter                     │
+│  RESOLUTION  2560×1080  —  but only in spirit       │
+└─────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 01 · OVERVIEW
 
-**kary** — разработчик, живущий в терминале и верящий, что лучший UI — это тот, который не мешает.
+**kary** — тот, кто оставляет терминал включённым, даже когда ужеalles сделано.
 
-Строю инструменты для тех, кто любит своё рабочее место так же, как я — без лишнего шума, с характером.
+Работает без шума. Строит то, что не требует объяснений.
 
 ---
 
-## 02 · DEVICE MAP
+## 02 · DEVICE MAP — empty
 
 ```
 ┌─ DEVICES ──────────────────────────────────────────┐
-│  Displays    2560×1080 @ 199Hz · 1 monitor        │
-│  Connections WiFi · VPN active                    │
-│  Input       Keyboard · Mouse · Tablet            │
-│  Cursor      Custom · Hyprland dynamics           │
-│  Machine     Intel i5-11400F · Arc A380           │
+│  Displays    one screen, one vision                │
+│  Connections  still online, barely                 │
+│  Input       keys · silence                        │
+│  Cursor      somewhere between here and there      │
 └─────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 03 · DESKTOP CONFIG
+## 03 · DESKTOP — void
 
 ```
 ┌─ APPEARANCE ───────────────────────────────────────┐
-│  Theme      Dark · Ryoku Black                    │
-│  Font       JetBrains Mono · Inter                │
-│  Accent     #ff5530 (rust) · #0d0d0d (void)       │
-│  Bar        Custom Hyprland bar · dwm-style       │
-│  Icons      Papirus Dark · Nerd Font glyphs       │
+│  Theme      Dark · void · black                    │
+│  Font       monospace · nothing else               │
+│  Accent     rust · crack                           │
+│  Bar        nothing extra                          │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -82,23 +77,16 @@ BRANCH     main · 09b925e
 
 ## 術 · ARSENAL
 
-### 🛠 Stack
+### stack (as style)
 
-| Layer       | Tools                                          |
-|-------------|------------------------------------------------|
-| **OS**      | Arch Linux · Ryoku custom                      |
-| **WM**      | Hyprland                                       |
-| **Shell**   | zsh · kitty · tmux                             |
-| **Dev**     | Python, Rust, C, JS/TS, Go                    |
-| **Editor**  | Neovim · VS Code (emergency)                  |
-| **Terminal**| kitty 0.48.2 · ghostty experiments            |
-| **WM extras**| hyprland · waybar · mako · swaync           |
-
-### 📦 Current projects
-
-- **ryoku-repo** — системный indexing и навигация по конфигам
-- **prowl** — code intelligence для агентов
-- Разные эксперименты с AI-агентами и автоматизацией
+| Layer     | Language         |
+|-----------|------------------|
+| **OS**    | Arch · ryoku     |
+| **WM**    | Hyprland         |
+| **Shell** | terminal habits  |
+| **Dev**   | code as craft    |
+| **Editor**| neovim hand      |
+| **Spirit**| minimal · sharp  |
 
 ---
 
@@ -114,11 +102,11 @@ BRANCH     main · 09b925e
 
 ```
     ░▒▓█═══════════════════════════════════════█▓▒░
-          kary @archlinux · Ryoku III BETA // 18
+          kary @void · Ryoku III BETA // 18
           "A live specimen — cracked, shot on black."
     ░▒▓█═══════════════════════════════════════█▓▒░
 
-    RYOKU-ODIN-20260831 · 247 EXPLICIT · 38 AUR · 1296 TOTAL
+    RYOKU-ODIN · 247 EXPLICIT · 38 AUR · UNKNOWN TOTAL
 ```
 
 ---

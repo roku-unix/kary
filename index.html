@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RYOKU · kary · SYSTEM DOSSIER</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #050505;
+    --bg-secondary: #0a0a0a;
+    --text: #e0e0e0;
+    --text-dim: #7a7a7a;
+    --text-muted: #555;
+    --accent-red: #ff2a2a;
+    --accent-teal: #00ffaa;
+    --accent-orange: #ff6a33;
+    --line: #222;
+    --glow-teal: rgba(0, 255, 170, 0.15);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    background-image: var(--noise);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* watermark */
+  .watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 280px;
+    color: rgba(255,255,255,0.015);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    z-index: 0;
+  }
+
+  /* vertical strip */
+  .vstrip {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 180px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.95), transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    z-index: 1;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* main layout */
+  .app {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* sidebar */
+  .sidebar {
+    width: 220px;
+    padding: 16px 14px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(0,0,0,0.4);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .logo-icon {
+    font-size: 22px;
+    color: var(--text);
+  }
+
+  .logo-text {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .logo-text span { color: var(--accent-red); }
+
+  .search-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: 11px;
+    color: var(--text-dim);
+    border-radius: 2px;
+    margin-bottom: 14px;
+    width: 100%;
+  }
+
+  .search-box::placeholder { color: var(--text-muted); }
+
+  .menu-section {
+    margin-bottom: 4px;
+  }
+
+  .menu-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    padding: 6px 0 3px;
+    margin-top: 6px;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    font-size: 11px;
+    color: var(--text-dim);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .menu-item:hover {
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+  }
+
+  .menu-item.active {
+    background: rgba(255,42,42,0.08);
+    color: var(--text);
+  }
+
+  .menu-item .num {
+    color: var(--text-muted);
+    font-size: 10px;
+    width: 18px;
+  }
+
+  .menu-item.active .num {
+    color: var(--accent-red);
+  }
+
+  .menu-item .jp {
+    color: var(--text-muted);
+    font-size: 10px;
+    margin-left: auto;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .barcode {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 16px;
+  }
+
+  .barcode span {
+    width: 2px;
+    background: var(--text-muted);
+    border-radius: 1px;
+  }
+
+  .toggle {
+    width: 32px;
+    height: 16px;
+    background: var(--text-muted);
+    border-radius: 8px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .toggle.on { background: var(--accent-teal); }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--bg);
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: 0.2s;
+  }
+  .toggle.on::after { left: 18px; }
+
+  /* main content */
+  .main {
+    flex: 1;
+    padding: 40px 50px;
+    overflow-y: auto;
+    max-width: 800px;
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+  }
+
+  .top-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+
+  .top-btn:hover { color: var(--text); border-color: var(--text-dim); }
+  .top-btn.dot::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent-red);
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+
+  /* dossier header */
+  .dossier-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .dossier-title {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+  }
+
+  .dossier-title .power {
+    color: var(--text);
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  .epithet-btn {
+    font-size: 10px;
+    color: var(--accent-teal);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
+
+  /* profile card */
+  .profile {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .profile-name {
+    font-size: 72px;
+    font-weight: 300;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 6px;
+    outline: 1px solid var(--accent-orange);
+    outline-offset: 4px;
+    opacity: 0.95;
+  }
+
+  .profile-watermark-btn {
+    font-size: 10px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .profile-meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .profile-meta .handle { color: var(--text); }
+
+  .profile-tagline {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+    letter-spacing: 0.05em;
+  }
+
+  /* telemetry */
+  .section-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .section-label .btn {
+    font-size: 10px;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+  }
+
+  .telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .tele-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--line);
+    padding: 10px 12px;
+    position: relative;
+  }
+
+  .tele-label {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .tele-value {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .tele-value.critical {
+    color: var(--accent-orange);
+  }
+
+  .tele-value .unit {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-left: 2px;
+  }
+
+  /* connection lines to portrait */
+  .connector {
+    position: absolute;
+    width: 1px;
+    background: var(--accent-teal);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* system info */
+  .sys-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .sys-item {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    padding: 6px 8px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid transparent;
+  }
+
+  .sys-item .label {
+    color: var(--text-muted);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .sys-item .val {
+    color: var(--text);
+    font-size: 11px;
+  }
+
+  .fracture-badge {
+    font-size: 11px;
+    color: var(--accent-red);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .fracture-badge .jp {
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+
+  .version-strip {
+    display: flex;
+    gap: 16px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .version-strip .ok { color: var(--accent-teal); }
+
+  .action-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    font-size: 10px;
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--line);
+    padding: 5px 12px;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: 0.15s;
+  }
+
+  .action-btn:hover {
+    color: var(--text);
+    border-color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .action-btn.edit {
+    color: var(--accent-red);
+    border-color: var(--accent-red);
+  }
+
+  /* portrait area */
+  .portrait {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .portrait-box {
+    width: 220px;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #111 0%, #0a0a0a 100%);
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .portrait-box .stat-label {
+    position: absolute;
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    background: rgba(0,0,0,0.7);
+    padding: 3px 6px;
+    border-left: 1px solid var(--accent-teal);
+  }
+
+  /* bottom bar */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 180px;
+    right: 0;
+    height: 40px;
+    background: rgba(0,0,0,0.8);
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 5;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .waveform {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 20px;
+  }
+
+  .waveform span {
+    width: 3px;
+    background: var(--text-muted);
+    border-radius: 1px;
+    opacity: 0.5;
+  }
+
+  .waveform span:nth-child(3n) { opacity: 1; background: var(--accent-teal); }
+
+  .load-val {
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .bottom-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .preset-label {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-right: 4px;
+  }
+
+  .preset-btn {
+    font-size: 9px;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: 0.15s;
+  }
+
+  .preset-btn.active {
+    color: var(--text);
+    border-color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .bottom-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .done-btn {
+    padding: 4px 16px;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+  }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    .sidebar { width: 160px; }
+    .vstrip { width: 120px; font-size: 9px; }
+    .profile-name { font-size: 48px; }
+    .telemetry-grid { grid-template-columns: repeat(2, 1fr); }
+    .sys-info { grid-template-columns: 1fr; }
+    .portrait { display: none; }
+    .bottom-bar { left: 160px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="watermark">RUIN</div>
+
+<div class="vstrip">RYOKU · ODIN · KERNEL 7.1 · arch-chroot</div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">力</span>
+      <span class="logo-text">RYOKU ARCH<br><span>//SETTINGS_</span></span>
+    </div>
+
+    <input class="search-box" type="text" placeholder="Search settings...">
+
+    <div class="menu-section">
+      <div class="menu-label">01 OVERVIEW</div>
+      <div class="menu-item active">
+        <span class="num">//</span> Profile
+        <span class="jp">横顔</span>
+      </div>
+      <div class="menu-item">
+        <span class="num">//</span> Global
+        <span class="jp">全般</span>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-label">02 DEVICES</div>
+      <div class="menu-item"><span class="num">//</span> Displays <span class="jp">画面</span></div>
+      <div class="menu-item"><span class="num">//</span> Connections <span class="jp">接続</span></div>
+      <div class="menu-item"><span class="num">//</span> Input <span class="jp">入力</span></div>
+      <div class="menu-item"><span class="num">//</span> Cursor <span class="jp">矢印</span></div>
+      <div class="menu-item"><span class="num">//</span> Machine <span class="jp">演算</span></div>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-label">03 DESKTOP</div>
+      <div class="menu-item"><span class="num">//</span> Windows <span class="jp">窓</span></div>
+      <div class="menu-item"><span class="num">//</span> Appearance <span class="jp">外観</span></div>
+      <div class="menu-item"><span class="num">//</span> Bar Studio <span class="jp">帯</span></div>
+      <div class="menu-item"><span class="num">//</span> Desktop <span class="jp">卓上</span></div>
+      <div class="menu-item"><span class="num">//</span> Widgets <span class="jp">部品</span></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="font-size:9px;">III BETA // 18</span>
+        <div class="barcode">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <span style="font-size:9px;">RYOKU HUB</span>
+      </div>
+      <div class="toggle"></div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="top-bar">
+      <button class="top-btn">FILES</button>
+      <button class="top-btn dot">UPDATES</button>
+      <button class="top-btn">DONE</button>
+    </div>
+
+    <div class="dossier-header">
+      <div class="dossier-title">
+        <span class="power">力</span> · SYSTEM DOSSIER
+      </div>
+      <button class="epithet-btn">Q EPITHETS</button>
+    </div>
+
+    <div class="profile">
+      <button class="profile-watermark-btn">WATERMARK</button>
+      <div class="profile-name">kary</div>
+      <div class="profile-meta">
+        <span class="handle">@archlinux</span> · 03:45
+      </div>
+      <div class="profile-tagline">
+        A live specimen — cracked, shot on black.
+      </div>
+    </div>
+
+    <div class="section-label">
+      TELEMETRY
+      <button class="btn">TELEMETRY</button>
+    </div>
+
+    <div class="telemetry-grid">
+      <div class="tele-item" style="grid-column: span 2;">
+        <div class="tele-label">CORE</div>
+        <div class="tele-value critical">86<span class="unit">°C</span></div>
+      </div>
+      <div class="tele-item">
+        <div class="tele-label">CPU</div>
+        <div class="tele-value">14<span class="unit">%</span></div>
+      </div>
+      <div class="tele-item">
+        <div class="tele-label">GPU</div>
+        <div class="tele-value">0<span class="unit">°C</span></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">0%</div>
+      </div>
+      <div class="tele-item">
+        <div class="tele-label">MEMORY</div>
+        <div class="tele-value">85<span class="unit">%</span></div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:2px;">13G / 16G</div>
+      </div>
+      <div class="tele-item" style="grid-column: span 2;">
+        <div class="tele-label">NETWORK</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">
+          ↓ 1.7 KB/s &nbsp;&nbsp; ↑ 930 B/s
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:4px;">
+      SYSTEM
+    </div>
+
+    <div class="sys-info">
+      <div class="sys-item">
+        <div class="label">RESOLUTION</div>
+        <div class="val">2560×1080 @ 199Hz</div>
+      </div>
+      <div class="sys-item">
+        <div class="label">COMPOSITOR</div>
+        <div class="val">Hyprland v0.56.2</div>
+      </div>
+      <div class="sys-item">
+        <div class="label">UPTIME</div>
+        <div class="val">9h 21m</div>
+      </div>
+    </div>
+
+    <div class="fracture-badge">
+      <span>角裂 · FRACTURE</span>
+      <span class="jp">— cracked</span>
+    </div>
+
+    <div class="version-strip">
+      <span>BETA · 18</span>
+      <span class="ok">● STABLE</span>
+    </div>
+
+    <div class="action-bar">
+      <button class="action-btn">SPECS</button>
+      <button class="action-btn">PACKAGES</button>
+      <button class="action-btn">PALETTE</button>
+      <button class="action-btn">SIGNAL</button>
+      <button class="action-btn edit">EDIT HERO</button>
+    </div>
+
+    <div class="portrait">
+      <div class="portrait-box">
+        <div style="position:absolute;top:8px;left:8px;font-size:9px;color:var(--text-muted);letter-spacing:0.1em;">服 · LIVE TELEMETRY</div>
+        <div style="position:absolute;bottom:8px;right:8px;font-size:9px;color:var(--text-muted);letter-spacing:0.1em;">BETA · 18<br>STABLE</div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;height:80%;background:radial-gradient(ellipse at center, rgba(0,255,170,0.03) 0%, transparent 70%);border-radius:50%;"></div>
+        <!-- halftone dots pattern -->
+        <svg width="100%" height="100%" style="position:absolute;top:0;left:0;opacity:0.08;">
+          <defs>
+            <pattern id="dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+              <circle cx="4" cy="4" r="1.2" fill="#00ffaa"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots)"/>
+        </svg>
+        <!-- crack lines -->
+        <svg width="100%" height="100%" style="position:absolute;top:0;left:0;opacity:0.6;">
+          <line x1="30%" y1="20%" x2="50%" y2="40%" stroke="#ff2a2a" stroke-width="0.5" opacity="0.8"/>
+          <line x1="50%" y1="40%" x2="45%" y2="60%" stroke="#ff2a2a" stroke-width="0.5" opacity="0.6"/>
+          <line x1="50%" y1="40%" x2="60%" y2="55%" stroke="#ff2a2a" stroke-width="0.4" opacity="0.5"/>
+          <line x1="60%" y1="55%" x2="55%" y2="70%" stroke="#ff2a2a" stroke-width="0.4" opacity="0.4"/>
+          <line x1="30%" y1="20%" x2="25%" y2="35%" stroke="#ff2a2a" stroke-width="0.3" opacity="0.3"/>
+        </svg>
+        <!-- teal connector lines -->
+        <svg width="100%" height="100%" style="position:absolute;top:0;left:0;opacity:0.3;">
+          <line x1="15%" y1="30%" x2="45%" y2="35%" stroke="#00ffaa" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <line x1="15%" y1="70%" x2="45%" y2="65%" stroke="#00ffaa" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <line x1="80%" y1="30%" x2="55%" y2="40%" stroke="#00ffaa" stroke-width="0.5" stroke-dasharray="2,2"/>
+        </svg>
+        <!-- statue silhouette approximation -->
+        <svg width="100%" height="100%" viewBox="0 0 100 133" preserveAspectRatio="xMidYMid meet" style="position:absolute;top:0;left:0;">
+          <path d="M30 130 L30 80 Q30 60 40 55 Q50 48 55 50 L55 30 Q55 15 65 12 Q75 10 80 20 L80 50 Q80 60 75 70 L75 80 Q75 95 60 100 L40 100 Q25 95 25 80 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>
+          <circle cx="55" cy="30" r="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="0.3"/>
+          <path d="M45 30 Q55 22 65 30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.3"/>
+          <line x1="55" y1="38" x2="55" y2="55" stroke="rgba(255,42,42,0.15)" stroke-width="0.3"/>
+          <line x1="55" y1="55" x2="50" y2="75" stroke="rgba(255,42,42,0.1)" stroke-width="0.3"/>
+          <line x1="55" y1="55" x2="60" y2="70" stroke="rgba(255,42,42,0.1)" stroke-width="0.3"/>
+        </svg>
+        <!-- labels pointing to parts -->
+        <div class="stat-label" style="top:22%;left:0;transform:translateY(-50%);">CORE</div>
+        <div class="stat-label" style="top:65%;right:0;transform:translateY(-50%);">MEMORY</div>
+        <div style="position:absolute;top:38%;left:8px;font-size:8px;color:var(--accent-teal);opacity:0.6;letter-spacing:0.1em;">CPU</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="bottom-left">
+    <button class="top-btn" style="font-size:9px;padding:2px 8px;">MARGINALIA</button>
+    <div class="waveform">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <span class="load-val">LOAD 4.48</span>
+  </div>
+  <div class="bottom-center">
+    <span class="preset-label">PRESET</span>
+    <button class="preset-btn active">FULL</button>
+    <button class="preset-btn">MINIMAL</button>
+    <button class="top-btn" style="font-size:9px;padding:2px 8px;">IMPORT</button>
+    <button class="top-btn" style="font-size:9px;padding:2px 8px;">EXPORT PROFILE</button>
+    <button class="top-btn" style="font-size:9px;padding:2px 8px;">EXPORT IMAGE</button>
+    <button class="top-btn" style="font-size:9px;padding:2px 8px;">RESET</button>
+    <button class="done-btn">DONE</button>
+  </div>
+  <div class="bottom-right">
+    <svg width="24" height="20" viewBox="0 0 24 20" style="opacity:0.5;">
+      <rect x="1" y="1" width="2" height="18" fill="#00ffaa" opacity="0.5"/>
+      <rect x="4" y="4" width="2" height="15" fill="#00ffaa" opacity="0.6"/>
+      <rect x="7" y="2" width="2" height="17" fill="#00ffaa" opacity="0.4"/>
+      <rect x="10" y="5" width="2" height="13" fill="#00ffaa" opacity="0.7"/>
+      <rect x="13" y="3" width="2" height="16" fill="#00ffaa" opacity="0.5"/>
+      <rect x="16" y="6" width="2" height="12" fill="#00ffaa" opacity="0.6"/>
+      <rect x="19" y="1" width="2" height="18" fill="#00ffaa" opacity="0.4"/>
+      <rect x="22" y="4" width="2" height="15" fill="#00ffaa" opacity="0.5"/>
+    </svg>
+    <span class="load-val">LOAD 4.48</span>
+  </div>
+</div>
+
+</body>
+</html>
